@@ -8,10 +8,10 @@ import java.util.Base64;
 
 public class AES256Encryption {
 
-    private static final String FIXED_KEY = "1234567890abcdef1234567890abcdef"; // 32 байти = 256 біт
+    private static final String FIXED_KEY = "1234567890abcdef1234567890abcdef"; 
 
     public static SecretKey getSecretKey() {
-        byte[] decodedKey = Base64.getDecoder().decode(FIXED_KEY); // декодуємо з Base64
+        byte[] decodedKey = Base64.getDecoder().decode(FIXED_KEY); 
         return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
     }
 
