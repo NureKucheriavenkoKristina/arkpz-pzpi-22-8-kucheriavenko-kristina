@@ -1,1 +1,307 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
+
+
+
+Кафедра програмної інженерії
+
+
+
+
+Звіт
+з лабораторної роботи №3
+з дисципліни  «Аналіз та рефакторінг коду»
+на тему «РОЗРОБКА БІЗНЕС-ЛОГІКИ ТА ФУНКЦІЙ АДМІНІСТРУВАННЯ СЕРВЕРНОЇ ЧАСТИНИ ПРОГРАМНОЇ СИСТЕМИ»
+
+
+
+
+Виконала:						    Перевірив:
+Ст. гр. ПЗПІ-22-8                                  	    ст. викл. Сокорчук І. П.
+Кучерявенко К. Р. 
+
+
+
+
+Харків 2024
+3.1 Мета роботи
+Розробити бізнес-логіку та функції адміністрування серверної частини  програмної системи.
+
+3.2 Хід роботи
+3.2.1 Бізнес-логіка
+
+Посилання на відеоролик: https://youtu.be/4JX4ciW-N7A
+
+Для всіх таблиць створено вимоги до заповнення кожного рядка. 
+Таблиця BiologicalMaterials:
+–	materialID унікальний ідентифікатор запису, генерується автоматично;
+–	materialName обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
+–	expirationDate обов’язкове поле, дата має бути у майбутньому;
+–	status обов’язкове поле, перелічуваний тип даних, значення, окрім визначених у переліку, не дозволяються;
+–	transferDate обов’язкове поле, дата, яка має бути у минулому або сьогоденні;
+–	donorID обов’язкове поле, зв’язок з таблицею Donors, не може бути пустим.
+Таблиця Donors:
+–	donorID унікальний ідентифікатор донора, генерується автоматично;
+–	firstName обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
+–	lastName обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
+–	birthDate обов’язкове поле, дата, яка має бути у минулому;
+–	gender обов’язкове поле, перелічуваний тип даних, значення, окрім визначених у переліку, не дозволяються;
+–	idNumber обов’язкове поле, унікальний ідентифікатор донора, що відповідає шаблону з 10 латинських літер та цифр;
+–	bloodType обов’язкове поле, перелічуваний тип даних для групи крові;
+–	transplantRestrictions необов’язкове поле, рядок до 500 символів, може залишатися пустим.
+Таблиця EventLogs:
+–	eventLogID унікальний ідентифікатор запису, генерується автоматично;
+–	actionDetails обов’язкове поле, рядок довжиною від 2 до 1000 символів, не може бути пустим;
+–	actionTime обов’язкове поле, дата має бути у минулому або сьогоденні;
+–	creatorID обов’язкове поле, зв’язок з таблицею Users, не може бути пустим.
+Таблиця Notifications:
+–	notificationID унікальний ідентифікатор запису, генерується автоматично;
+–	eventTime обов’язкове поле, дата має бути у минулому або сьогоденні;
+–	eventType обов’язкове поле, рядок довжиною від 2 до 100 символів, не може бути пустим;
+–	details обов’язкове поле, рядок довжиною від 5 до 500 символів, не може бути пустим;
+–	status обов’язкове поле, рядок довжиною від 2 до 50 символів, не може бути пустим;
+–	materialID обов’язкове поле, зв’язок з таблицею BiologicalMaterials, не може бути пустим.
+Таблиця Reports:
+–	reportID унікальний ідентифікатор запису, генерується автоматично;
+–	reportType обов’язкове поле, рядок довжиною від 2 до 100 символівн, не може бути пустим;
+–	creationDate обов’язкове поле, дата, яка має бути у минулому або сьогоденні;
+–	text обов’язкове поле, рядок довжиною від 5 до 1000 символів, не може бути пустим;
+–	fileLink обов’язкове поле, унікальний рядок довжиною від 5 до 500 символів, не може бути пустим;
+–	eventLogID обов’язкове поле, зв’язок з таблицею EventLogs, не може бути пустим.
+Таблиця StorageCondition:
+–	recordID унікальний ідентифікатор запису, генерується автоматично;
+–	temperature обов’язкове поле, числове значення у межах від -100 до 100;
+–	oxygenLevel обов’язкове поле, числове значення у межах від 0 до 100;
+–	humidity обов’язкове поле, числове значення у межах від 0 до 100;
+–	measurementTime обов’язкове поле,  дата має бути у минулому або сьогоденні;
+–	materialID обов’язкове поле, зв’язок з таблицею BiologicalMaterials, не може бути пустим.
+Таблиця Users:
+–	userID унікальний ідентифікатор запису, генерується автоматично;
+–	firstName обов’язкове поле, рядок довжиною від 2 до 255 символів, не може бути пустим;
+–	lastName обов’язкове поле, рядок довжиною від 2 до 255 символів, не може бути пустим;
+–	role обов’язкове поле, рядок довжиною від 2 до 255 символів, не може бути пустим;
+–	accessRights поле містить значення за умовчанням, перелічуваний тип даних, не може бути пустим;
+–	login обов’язкове поле, унікальний рядок довжиною від 2 до 100 символів, форматоване як email;
+–	password обов’язкове поле, рядок довжиною не менше 6 символів, не може бути пустим.
+До кожної таблиці було реалізовано можливість додавання та видалення запису, редагування за первинним ключем, отримання всіх записів або за первинним ключем. Для таблиці Users реалізовано шифрування за допомогою стандартів AES-256.
+Приклад моделі User з валідацією у додатку А.
+
+
+
+
+3.2.2 Функції адміністрування серверної частини програмної системи
+
+Для адміністрування створено користувачів з різним типом доступу та журналювання подій. При реєстрації користувача через адміністративну сторінку, то можна обрати його доступ: повний, читання з обмеженнями та без. Хто не матиме повного доступу, може лише переглядати дані деяких таблиць без можливості внесень будь-яких змін. Якщо, користувач має права читання без обмежень, то матиме доступ до перегляду всіх таблиць. При реєстрації не через адміністративну панель, користувач матиме лише доступ обмеженого читання. В обмеженому читанні не доступна таблиця логування. 
+Таблиця EventLogs містить всі зміни, які пов’язані з матеріалами. Вони записуватимуться автоматично. Перегляд певної інформації не вважається подією. Дані з журналу подій можна вивести у вигляді звіту, який формується за запитом користувача. Приклад коду, де виконується логування у додатку Б. Також в цьому класі відбувається перевірка на доступність дії через первинний ключ користувача. У додатку В знаходиться код для виконання авторизації користувача. 
+
+ 
+Рисунок 3.1 – Приклад шифрування паролю
+
+ 
+Рисунок 3.2 – Вхід за паролем та логіном
+ 
+Рисунок 3.3 – Вихід з акаунту
+
+3.2.3 Бізнес логіка серверної частини
+
+Даний розділ охоплює фрагменти коду, що містять основну бізнес-логіку серверної частини додатку. Важливим аспектом є реалізація операцій для обробки запитів на створення, отримання, оновлення та видалення користувачів, а також робота з журналами подій. Крім того, кожна операція має свої умови доступу, що визначають, чи має користувач права для виконання певних дій.
+У контролерах для роботи з користувачами та журналами подій вбудовані перевірки на рівень доступу, що дозволяють визначати, чи може поточний користувач виконати ту чи іншу операцію. Наприклад, операція створення користувача доступна всім, але для створення або редагування адміністратора потрібно перевіряти, чи має користувач відповідні права адміністратора. Операції для редагування або видалення користувачів, як правило, доступні лише для користувачів з повним доступом, щоб обмежити можливість зміни критичних даних.
+Основні принципи:
+–	перевірка рівня доступу: кожна операція перевіряється на відповідний рівень доступу, чи це просто доступ для перегляду, чи повний доступ для редагування;
+–	обробка запитів: запити на створення, оновлення, видалення та отримання користувачів обробляються відповідними сервісами, що виконують необхідну бізнес-логіку;
+–	валідність введених даних: перед виконанням операцій перевіряються валідність введених даних, наприклад, через @Valid, і якщо є помилки, користувачу повертається відповідь з кодом 400 Bad Request.
+
+ 
+Рисунок 3.4 – UML діаграма діяльності 
+
+
+
+3.2.4 Адміністрування серверної частини
+
+В даному розділі йдеться про частину коду, що відповідає за адміністрування, тобто за обмеження доступу для різних ролей користувачів до певних функцій додатку. Адміністративний доступ має бути суворо обмежений, щоб забезпечити належний рівень безпеки та контролю. Весь код, що стосується адміністрування, повинен включати механізми для перевірки ролей користувачів перед виконанням критичних операцій, таких як створення, редагування або видалення користувачів, а також створення чи видалення журналів подій.
+Контролери, що відповідають за адміністрування, повинні виконувати перевірки доступу, щоб визначити, чи може поточний користувач виконати певну операцію. Для цього в коді передбачено виклики методів, які перевіряють рівень доступу користувача. Наприклад, адміністратор має можливість створювати та редагувати користувачів, а також переглядати та змінювати журнали подій. Водночас звичайні користувачі не можуть виконувати ці операції і мають доступ лише до перегляду інформації.
+Основні принципи:
+–	рівні доступу: доступ до операцій адміністрування, таких як створення, редагування та видалення, здійснюється лише для користувачів з правами адміністратора;
+–	перевірка прав користувача: кожен запит до ресурсів, які потребують адміністративних прав, передбачає перевірку ролі користувача. Якщо роль не відповідає вимогам, запит не буде виконаний;
+–	реалізація доступу до журналів подій: доступ до журналів подій також повинен бути обмежений. Наприклад, лише користувачі з правами Full або ReadFull можуть переглядати деталі журналів подій.
+ 
+Рисунок 3.4 – UML діаграма взаємодії для серверної частини
+
+Висновки: під час роботи було розроблено бізнес-логіку та функції адміністрування серверної частини  програмної системи.
+ 
+Додаток А
+Код моделі «Користувач» з валідацією
+
+
+01 @Entity  
+02 @Table(name = "users")  
+03 @Getter  
+04 @Setter  
+05 public class User {  
+06  
+07     @Id  
+08     @GeneratedValue(strategy = GenerationType.IDENTITY)  
+09     private Long userID;  
+10  
+11     @JsonProperty("first_name")  
+12     @NotBlank(message = "First name is required")  
+13     @Size(min = 2, max = 255, message = "Name must be between 2 and 255 characters")  
+14     @Column(nullable = false)  
+15     private String firstName;  
+16  
+17     @JsonProperty("last_name")  
+18     @NotBlank(message = "Last name is required")  
+19     @Size(min = 2, max = 255, message = "Last name must be between 2 and 255 characters")  
+20     @Column(nullable = false)  
+21     private String lastName;  
+22  
+23     @NotNull(message = "Role cannot be null")  
+24     @Size(min = 2, max = 255, message = "Access rights must be between 2 and 255 characters")  
+25     @Column(nullable = false)  
+26     private String role;  
+27  
+28     @Enumerated(EnumType.STRING)  
+29     @JsonProperty("access_rights")  
+30     @Column(nullable = false)  
+31     private Access accessRights = Access.READ_ONLY;  
+32  
+33     @Column(nullable = false, unique = true)  
+34     @NotBlank(message = "Login is required")  
+35     @Size(min = 2, max = 100, message = "Login must be between 2 and 100 characters")  
+36     @Email(message = "Login(email) are required")  
+37     private String login;  
+38  
+39     @Column(nullable = false)  
+40     @NotBlank(message = "Password is required")  
+41     @Size(min = 6, message = "Password must be at least 6 characters long")  
+42     private String password;  
+43 }  
+ 
+Додаток Б
+Логування дій з таблицею «Біологічні матеріали»
+
+
+01 @RequiredArgsConstructor  
+02 @RestController  
+03 @RequestMapping("/api/biological-materials")  
+04 public class BiologicalMaterialController {  
+05  
+06     private final BiologicalMaterialService biologicalMaterialService;  
+07     private final UserService userService;  
+08     private final EventLogService eventLogService;  
+09  
+10     @PostMapping("/admin/{userId}/add")  
+11     public ResponseEntity<BiologicalMaterial> createBiologicalMaterial(  
+12             @PathVariable("userId") Long userId,  
+13             @Valid @RequestBody BiologicalMaterial biologicalMaterial,  
+14             BindingResult result) {  
+15  
+16         if (result.hasErrors()) {  
+17             return ResponseEntity.badRequest().body(null);  
+18         }  
+19  
+20         User user = userService.getUserById(userId);  
+21         if (user == null) {  
+22             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  
+23         }  
+24         if (!userService.availabilityOfAction(userId)) {  
+25             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);  
+26         }  
+27  
+28         biologicalMaterialService.createBiologicalMaterial(user, biologicalMaterial);  
+29         eventLogService.logAction(user, "Added new BiologicalMaterial with ID: " + biologicalMaterial.getMaterialID());  
+30  
+31         return ResponseEntity.ok(biologicalMaterial);  
+32     }  
+33  
+34     @GetMapping("/{materialID}")  
+35     public ResponseEntity<BiologicalMaterial> getBiologicalMaterialById(@PathVariable("materialID") Long materialID) {  
+36         return ResponseEntity.ok(biologicalMaterialService.getBiologicalMaterialById(materialID));  
+37     }  
+38  
+39     @GetMapping  
+40     public ResponseEntity<List<BiologicalMaterial>> getAllBiologicalMaterials() {  
+41         return ResponseEntity.ok(biologicalMaterialService.getAllBiologicalMaterials());  
+42     }  
+43  
+44     @PutMapping("/admin/{userId}/{materialID}")  
+45     public ResponseEntity<BiologicalMaterial> updateBiologicalMaterial(  
+46             @PathVariable("userId") Long userId,  
+47             @PathVariable("materialID") Long materialID,  
+48             @Valid @RequestBody BiologicalMaterial biologicalMaterial,  
+49             BindingResult result) {  
+50  
+51         if (result.hasErrors()) {  
+52             return ResponseEntity.badRequest().body(null);  
+53         }  
+54  
+55         User user = userService.getUserById(userId);  
+56         if (user == null) {  
+57             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);  
+58         }  
+59         if (!userService.availabilityOfAction(userId)) {  
+60             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);  
+61         }  
+62  
+63         biologicalMaterialService.updateBiologicalMaterial(user, materialID, biologicalMaterial);  
+64         eventLogService.logAction(user, "Updated BiologicalMaterial with ID: " + materialID);  
+65  
+66         return ResponseEntity.ok(biologicalMaterial);  
+67     }  
+68  
+69     @DeleteMapping("/admin/{userId}/{materialID}")  
+70     public ResponseEntity<Void> deleteBiologicalMaterial(  
+71             @PathVariable("userId") Long userId,  
+72             @PathVariable("materialID") Long materialID) {  
+73  
+74         User user = userService.getUserById(userId);  
+75         if (user == null) {  
+76             return ResponseEntity.status(HttpStatus.NOT_FOUND).build();  
+77         }  
+78         if (!userService.availabilityOfAction(userId)) {  
+79             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();  
+80         }  
+81  
+82         biologicalMaterialService.deleteBiologicalMaterial(user, materialID);  
+83         eventLogService.logAction(user, "Deleted BiologicalMaterial with ID: " + materialID);  
+84  
+85         return ResponseEntity.noContent().build();  
+86     }  
+87 }  
+ 
+Додаток В
+Авторизація користувача
+
+
+01 @RestController  
+02 @RequestMapping("/log")  
+03 @RequiredArgsConstructor  
+04 public class AuthController {  
+05  
+06     private final UserService userService;  
+07     private final SessionService sessionService;  
+08  
+09     @PostMapping("/in")  
+10     public ResponseEntity<String> login(@RequestBody User loginRequest) throws Exception {  
+11         String username = loginRequest.getLogin();  
+12         String password = loginRequest.getPassword();  
+13  
+14         User user = userService.getUserByLogin(username);  
+15         password = AES256Encryption.encrypt(password);  
+16  
+17         if (user == null || !user.getPassword().equals(password)) {  
+18             return ResponseEntity.status(UNAUTHORIZED).body("Невірні облікові дані");  
+19         }  
+20         sessionService.startSession(user);  
+21  
+22         return ResponseEntity.ok("Вхід успішний. Ваш ID: " + user.getUserID());  
+23     }  
+24  
+25     @PostMapping("/out")  
+26     public ResponseEntity<String> logout(@RequestParam Long userId) {  
+27         sessionService.endSession(userId);  
+28         return ResponseEntity.ok("Вихід успішний.");  
+29     }  
+30 }  
+
 
