@@ -141,7 +141,7 @@ Body:
 - 403 Forbidden:
  - message (String): Відсутність дозволу на виконання дії.
 - 404 Not Found:
- -message (String): Повідомлення про те, що матеріал не знайдено.
+ - message (String): Повідомлення про те, що матеріал не знайдено.
 
 ### Delete Biological Material
 
