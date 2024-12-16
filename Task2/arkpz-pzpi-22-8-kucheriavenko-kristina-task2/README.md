@@ -161,3 +161,705 @@ Path:
   - Видалення матеріалу відбулося успішно.
 - 404 Not Found:
   - message (String): Повідомлення про те, що матеріал не знайдено.
+
+# DonorController API
+
+## Маршрути
+
+### Add Donor
+
+**POST** '/api/donors/admin/{userId}/add'
+
+#### Опис
+
+Додає нового донора від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+Body:
+- firstName (String): Ім'я донора.
+- lastName (String): Прізвище донора.
+- birthDate (Date): Дата народження донора.
+- gender (Gender): Стать донора.
+- idNumber (String): Ідентифікаційний номер донора.
+- bloodType (RhFactorOfBlood): Група крові донора.
+- transplantRestrictions (String): Обмеження на трансплантацію.
+
+#### Відповідь 
+
+- 200 OK:
+  - Donor (object): Об'єкт створеного донора.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Адміністратора не знайдено.
+
+### Get Donor By ID
+
+**GET** '/api/donors/{DonorID}'
+
+#### Опис
+
+Отримує інформацію про донора за його унікальним ідентифікатором.
+
+#### Параметри запиту
+Path:
+- DonorID (Long): Ідентифікатор донора.
+
+#### Відповідь 
+
+- 200 OK:
+  - Donor (object): Донор за вказаним ідентифікатором.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що донор не знайдений.
+
+### Get All Donors
+
+**GET** '/api/donors'
+
+#### Опис
+
+Отримує список усіх донорів.
+
+#### Відповідь 
+
+- 200 OK:
+  - List<Donor> (Array): Список усіх донорів.
+
+### Update Donor
+
+**PUT** '/api/donors/admin/{userId}/{DonorID}'
+
+#### Опис
+
+Оновлює існуючого донора від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- DonorID (Long): Ідентифікатор донора, якого потрібно оновити.
+Body:
+- firstName (String): Ім'я донора.
+- lastName (String): Прізвище донора.
+- birthDate (Date): Дата народження донора.
+- gender (Gender): Стать донора.
+- idNumber (String): Ідентифікаційний номер донора.
+- bloodType (RhFactorOfBlood): Група крові донора.
+- transplantRestrictions (String): Обмеження на трансплантацію.
+
+#### Відповідь 
+
+- 200 OK:
+  - Donor (Object): Оновлений об'єкт донора.
+- 400 Bad Request:
+  - message (String): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (String): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (String): Повідомлення про те, що донор не знайдений.
+
+### Delete Donor
+
+**DELETE** '/api/donors/admin/{userId}/{id}'
+
+#### Опис
+
+Видаляє донора від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор донора, якого потрібно видалити.
+
+#### Відповідь 
+
+- 204 No Content:
+  - Видалення донора відбулося успішно.
+- 404 Not Found:
+  - message (String): Повідомлення про те, що донор не знайдений.
+
+# EventLogController API
+
+## Маршрути
+
+### Add Event Log
+
+**POST** '/api/event-logs/admin/{userId}/add'
+
+#### Опис
+
+Додає новий запис про подію від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+Body:
+
+#### Відповідь 
+
+- 200 OK:
+  - EventLog (object): Об'єкт створеного запису про подію.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Адміністратора не знайдено.
+
+### Get Event Log By ID
+
+**GET** '/api/event-logs/admin/{userId}/{id}'
+
+#### Опис
+
+Отримує запис про подію за його унікальним ідентифікатором.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор запису.
+
+#### Відповідь 
+
+- 200 OK:
+  - EventLog (object): Запис про подію за вказаним ідентифікатором.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Запис не знайдено.
+
+### Get All Event Logs
+
+**GET** '/api/event-logs/admin/{userId}'
+
+#### Опис
+
+Отримує всі записи про події.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+
+#### Відповідь 
+
+- 200 OK:
+  - List<EventLog> (Array): Список всіх записів про події.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+
+### Update Event Log
+
+**PUT** '/api/event-logs/admin/{userId}/{id}'
+
+#### Опис
+
+Оновлює існуючий запис про подію від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор запису, який потрібно оновити.
+Body:
+- actionDetails (String): Деталі дії.
+- actionTime (Date): Час виконання дії.
+
+#### Відповідь 
+
+- 200 OK:
+  - EventLog (Object): Оновлений запис про подію.
+- 400 Bad Request:
+  - message (String): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (String): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (String): Запис не знайдено.
+
+### Delete Event Log
+
+**DELETE** '/api/event-logs/admin/{userId}/{id}'
+
+#### Опис
+
+Видаляє запис про подію від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор запису, який потрібно видалити.
+
+#### Відповідь 
+
+- 204 No Content:
+  - Видалення запису про подію відбулося успішно.
+- 403 Forbidden:
+  - message (String): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (String): Запис не знайдено.
+ 
+# NotificationController API
+
+## Маршрути
+
+### Add Notification
+
+**POST** '/api/notifications/admin/{userId}/add'
+
+#### Опис
+
+Додає нове сповіщення від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+Body:
+- eventTime (Date): Час події.
+- eventType (String): Тип події.
+- details (String): Деталі сповіщення.
+- status (String): Статус сповіщення.
+- materialID (BiologicalMaterial): Біологічний матеріал, що пов'язаний зі сповіщенням.
+
+#### Відповідь 
+
+- 200 OK:
+  - Notification (object): Об'єкт створеного сповіщення.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Адміністратора не знайдено.
+
+### Get Notification By ID
+
+**GET** '/api/notifications/{id}'
+
+#### Опис
+
+Отримує сповіщення за його унікальним ідентифікатором.
+
+#### Параметри запиту
+Path:
+- id (Long): Ідентифікатор сповіщення.
+
+#### Відповідь 
+
+- 200 OK:
+  - Notification (object): Сповіщення за вказаним ідентифікатором.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що сповіщення не знайдено.
+
+### Get All Notifications
+
+**GET** '/api/notifications'
+
+#### Опис
+
+Отримує список усіх сповіщень.
+
+#### Відповідь 
+
+- 200 OK:
+  - List<Notification> (Array): Список усіх сповіщень.
+
+### Update Notification
+
+**PUT** '/api/notifications/admin/{userId}/{id}'
+
+#### Опис
+
+Оновлює існуюче сповіщення від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор сповіщення, яке потрібно оновити.
+Body:
+- eventTime (Date): Час події.
+- eventType (String): Тип події.
+- details (String): Деталі сповіщення.
+- status (String): Статус сповіщення.
+- materialID (BiologicalMaterial): Біологічний матеріал, що пов'язаний зі сповіщенням.
+
+#### Відповідь 
+
+- 200 OK:
+  - Notification (Object): Оновлений об'єкт сповіщення.
+- 400 Bad Request:
+  - message (String): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (String): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (String): Повідомлення про те, що сповіщення не знайдено.
+
+### Delete Notification
+
+**DELETE** '/api/notifications/admin/{userId}/{id}'
+
+#### Опис
+
+Видаляє сповіщення від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор сповіщення, яке потрібно видалити.
+
+#### Відповідь 
+
+- 204 No Content:
+  - Видалення сповіщення відбулося успішно.
+- 404 Not Found:
+  - message (String): Повідомлення про те, що сповіщення не знайдено.
+
+# ReportController API
+
+## Маршрути
+
+### Add Report
+
+**POST** '/api/reports/admin/{userId}/add'
+
+#### Опис
+
+Додає новий звіт від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+Body:
+- reportType (String): Тип звіту.
+- creationDate (Date): Дата створення звіту.
+- text (String): Текст звіту.
+- fileLink (String): Посилання на файл звіту.
+- eventLogID (EventLog): Пов'язаний ідентифікатор журналу подій.
+
+#### Відповідь 
+
+- 200 OK:
+  - Report (object): Об'єкт створеного звіту.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Адміністратора не знайдено.
+
+### Get Report By ID
+
+**GET** '/api/reports/{id}'
+
+#### Опис
+
+Отримує звіт за його унікальним ідентифікатором.
+
+#### Параметри запиту
+Path:
+- id (Long): Ідентифікатор звіту.
+
+#### Відповідь 
+
+- 200 OK:
+  - Report (object): Звіт за вказаним ідентифікатором.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що звіт не знайдено.
+
+### Get All Reports
+
+**GET** '/api/reports'
+
+#### Опис
+
+Отримує список усіх звітів.
+
+#### Відповідь 
+
+- 200 OK:
+  - List<Report> (Array): Список усіх звітів.
+
+### Update Report
+
+**PUT** '/api/reports/admin/{userId}/{id}'
+
+#### Опис
+
+Оновлює існуючий звіт від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор звіту, який потрібно оновити.
+Body:
+- reportType (String): Тип звіту.
+- creationDate (Date): Дата створення звіту.
+- text (String): Текст звіту.
+- fileLink (String): Посилання на файл звіту.
+- eventLogID (EventLog): Пов'язаний ідентифікатор журналу подій.
+
+#### Відповідь 
+
+- 200 OK:
+  - Report (Object): Оновлений об'єкт звіту.
+- 400 Bad Request:
+  - message (String): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (String): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (String): Повідомлення про те, що звіт не знайдено.
+
+### Delete Report
+
+**DELETE** '/api/reports/admin/{userId}/{id}'
+
+#### Опис
+
+Видаляє звіт від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор звіту, яке потрібно видалити.
+
+#### Відповідь 
+
+- 204 No Content:
+  - Видалення звіту відбулося успішно.
+- 404 Not Found:
+  - message (String): Повідомлення про те, що звіт не знайдено.
+ 
+# StorageConditionController API
+
+## Маршрути
+
+### Add Storage Condition
+
+**POST** '/api/storage-conditions/admin/{userId}/add'
+
+#### Опис
+
+Додає нові умови зберігання від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+Body:
+- temperature (double): Температура зберігання.
+- oxygenLevel (double): Рівень кисню.
+- humidity (double): Вологість.
+- measurementTime (Date): Час вимірювання.
+- materialID (BiologicalMaterial): Ідентифікатор біологічного матеріалу.
+
+#### Відповідь 
+
+- 200 OK:
+  - StorageCondition (object): Об'єкт створених умов зберігання.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Адміністратора не знайдено.
+
+### Get Storage Condition By ID
+
+**GET** '/api/storage-conditions/{id}'
+
+#### Опис
+
+Отримує умови зберігання за їх унікальним ідентифікатором.
+
+#### Параметри запиту
+Path:
+- id (Long): Ідентифікатор умови зберігання.
+
+#### Відповідь 
+
+- 200 OK:
+  - StorageCondition (object): Умова зберігання за вказаним ідентифікатором.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що умова зберігання не знайдена.
+
+### Get All Storage Conditions
+
+**GET** '/api/storage-conditions'
+
+#### Опис
+
+Отримує список усіх умов зберігання.
+
+#### Відповідь 
+
+- 200 OK:
+  - List<StorageCondition> (Array): Список усіх умов зберігання.
+
+### Update Storage Condition
+
+**PUT** '/api/storage-conditions/admin/{userId}/{id}'
+
+#### Опис
+
+Оновлює існуючі умови зберігання від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор умови зберігання, яку потрібно оновити.
+Body:
+- temperature (double): Температура зберігання.
+- oxygenLevel (double): Рівень кисню.
+- humidity (double): Вологість.
+- measurementTime (Date): Час вимірювання.
+- materialID (BiologicalMaterial): Ідентифікатор біологічного матеріалу.
+
+#### Відповідь 
+
+- 200 OK:
+  - StorageCondition (object): Оновлений об'єкт умови зберігання.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Відсутність дозволу на виконання дії.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що умова зберігання не знайдена.
+
+### Delete Storage Condition
+
+**DELETE** '/api/storage-conditions/admin/{userId}/{id}'
+
+#### Опис
+
+Видаляє умову зберігання від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+- id (Long): Ідентифікатор умови зберігання, яку потрібно видалити.
+
+#### Відповідь 
+
+- 204 No Content:
+  - Видалення умови зберігання відбулося успішно.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що умова зберігання не знайдена.
+
+# UserController API
+
+## Маршрути
+
+### Create User
+
+**POST** '/api/users'
+
+#### Опис
+
+Створює нового користувача.
+
+#### Параметри запиту
+Body:
+- firstName (String): Ім'я користувача.
+- lastName (String): Призвище користувача.
+- role (String): Роль користувача.
+- accessRights (Access): Права доступу (READ_ONLY, READ_FULL FULL).
+- login (String): Логін користувача (електронна пошта).
+- password (String): Пароль користувача.
+
+#### Відповідь
+
+- 200 OK:
+  - User (object): Об'єкт створеного користувача.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+
+---
+
+### Create User by Admin
+
+**POST** '/api/users/admin/{userId}/add'
+
+#### Опис
+
+Створює нового користувача від імені адміністратора.
+
+#### Параметри запиту
+Path:
+- userId (Long): Ідентифікатор адміністратора, що виконує дію.
+Body:
+- firstName (String): Ім'я користувача.
+- lastName (String): Призвище користувача.
+- role (String): Роль користувача.
+- accessRights (Access): Права доступу (READ_FULL, READ_ONLY, FULL).
+- login (String): Логін користувача (електронна пошта).
+- password (String): Пароль користувача.
+
+#### Відповідь
+
+- 200 OK:
+  - User (object): Об'єкт створеного користувача.
+- 400 Bad Request:
+  - message (string): Повідомлення про помилку у вхідних даних.
+- 403 Forbidden:
+  - message (string): Адміністратор не має прав для створення користувача.
+
+---
+
+### Get User by ID
+
+**GET** '/api/users/{id}'
+
+#### Опис
+
+Отримує користувача за його унікальним ідентифікатором.
+
+#### Параметри запиту
+Path:
+- id (Long): Ідентифікатор користувача.
+
+#### Відповідь
+
+- 200 OK:
+  - User (object): Користувач за вказаним ідентифікатором.
+- 404 Not Found:
+  - message (string): Повідомлення про те, що користувач не знайдений.
+
+# AuthController API
+
+## Маршрути
+
+### Login (User Login)
+
+**POST** '/log/in'
+
+#### Опис
+
+Використовуються для входу користувача до системи. Використовує логін (електронну пошту) та пароль для автентифікації.
+
+#### Параметри запиту
+Body:
+- login (String): Логін користувача (email).
+- password (String): Пароль користувача.
+
+#### Відповідь 
+
+- 200 OK:
+  - message (string): Повідомлення про успішний вхід "Вхід успішний. Ваш ID: [userID]".
+- 401 Unauthorized:
+  - message (string): Повідомлення про невірні облікові дані.
+
+### Logout (User Logout)
+
+**POST** '/log/out'
+
+#### Опис
+
+Використовуються для виходу користувача з системи, закінчуючи сесію.
+
+#### Параметри запиту
+Query:
+- userId (Long): Ідентифікатор користувача, який виходить.
+
+#### Відповідь 
+
+- 200 OK:
+  - message (string): Повідомлення про успішний вихід "Вихід успішний".
