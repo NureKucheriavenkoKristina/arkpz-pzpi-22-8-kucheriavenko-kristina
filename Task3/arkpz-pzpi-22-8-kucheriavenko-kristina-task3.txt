@@ -30,8 +30,49 @@
 3.2 Хід роботи
 3.2.1 Бізнес-логіка
 
-Посилання на відеоролик: https://youtu.be/4JX4ciW-N7A
+Посилання на відеоролик: https://youtu.be/n0fejUUxiDo
 
+Математичні методи обробки даних використовуються під час логування змін у таблиці з умовами зберігання. При отриманні даних про температуру, вологість та кисень, система підраховує середнє значення всіх показників за цим матеріалом і відхилення останнього показника від середнього значення. Це надає змогу контролювати стан матеріалу та вчасно відкоригувати його умови зберігання. 
+Код з обробкою:
+1.  private String logMessage(StorageCondition condition, String creator) {
+2.      Map<String, Double> averages = calculateAverageValues(condition.getMaterialID().getMaterialID());
+3.      double temperatureDeviation = condition.getTemperature() - averages.getOrDefault("avgTemperature", 0.0);
+4.      double oxygenLevelDeviation = condition.getOxygenLevel() - averages.getOrDefault("avgOxygenLevel", 0.0);
+5.      double humidityDeviation = condition.getHumidity() - averages.getOrDefault("avgHumidity", 0.0);
+6.      return String.format(
+7.              "Added new storage condition by %s and material with ID: %d | " +
+8.                      "Averages - Temperature: %.2f°C (Deviation: %.2f°C), " +
+9.                      "Oxygen Level: %.2f%% (Deviation: %.2f%%), " +
+10.                     "Humidity: %.2f%% (Deviation: %.2f%%)",
+11.             creator,
+12.             condition.getRecordID(),
+13.             averages.getOrDefault("avgTemperature", 0.0),
+14.             temperatureDeviation,
+15.             averages.getOrDefault("avgOxygenLevel", 0.0),
+16.             oxygenLevelDeviation,
+17.             averages.getOrDefault("avgHumidity", 0.0),
+18.             humidityDeviation
+19.     );
+20. }
+Метод для отримання середніх значень: 
+1.  public Map<String, Double> calculateAverageValues(Long materialId) {
+2.      List<Object[]> averages = repository.findAverageValuesByMaterialId(materialId);
+3.      Map<String, Double> averagesMap = new HashMap<>();
+4.      if (averages != null && !averages.isEmpty()) {
+5.          Object[] avgValues = averages.get(0);
+6.          averagesMap.put("avgTemperature", (Double) avgValues[0]);
+7.          averagesMap.put("avgOxygenLevel", (Double) avgValues[1]);
+8.          averagesMap.put("avgHumidity", (Double) avgValues[2]);
+9.      }
+10.     return averagesMap;
+11. }
+Запит для підрахунку середніх значень: 
+1.  @Repository
+2.  public interface StorageConditionRepository extends JpaRepository<StorageCondition, Long> {
+3.  
+4.      @Query("SELECT AVG(sc.temperature), AVG(sc.oxygenLevel), AVG(sc.humidity) FROM StorageCondition sc WHERE sc.materialID.id = :materialId")
+5.      List<Object[]> findAverageValuesByMaterialId(Long materialId);
+6.  }
 Для всіх таблиць створено вимоги до заповнення кожного рядка. 
 Таблиця BiologicalMaterials:
 –	materialID унікальний ідентифікатор запису, генерується автоматично;
@@ -83,11 +124,8 @@
 –	accessRights поле містить значення за умовчанням, перелічуваний тип даних, не може бути пустим;
 –	login обов’язкове поле, унікальний рядок довжиною від 2 до 100 символів, форматоване як email;
 –	password обов’язкове поле, рядок довжиною не менше 6 символів, не може бути пустим.
-До кожної таблиці було реалізовано можливість додавання та видалення запису, редагування за первинним ключем, отримання всіх записів або за первинним ключем. Для таблиці Users реалізовано шифрування за допомогою стандартів AES-256.
+До кожної таблиці було реалізовано можливість додавання та видалення запису, редагування за первинним ключем, отримання всіх записів або за первинним ключем. Для таблиці Users реалізовано шифрування за допомогою стандартів AES-256. Код, який шифрує паролі знаходиться у додатку Г.
 Приклад моделі User з валідацією у додатку А.
-
-
-
 
 3.2.2 Функції адміністрування серверної частини програмної системи
 
@@ -303,5 +341,24 @@
 28         return ResponseEntity.ok("Вихід успішний.");  
 29     }  
 30 }  
+ 
+Додаток Г
+Код для шифрування даних
 
 
+1.  public class AES256Encryption {
+2.  
+3.      private static final String FIXED_KEY = "1234567890abcdef1234567890abcdef"; 
+4.  
+5.      public static SecretKey getSecretKey() {
+6.          byte[] decodedKey = Base64.getDecoder().decode(FIXED_KEY); 
+7.          return new SecretKeySpec(decodedKey, 0, decodedKey.length, "AES");
+8.      }
+9.  
+10.     public static String encrypt(String password) throws Exception {
+11.         Cipher cipher = Cipher.getInstance("AES");
+12.         cipher.init(Cipher.ENCRYPT_MODE, getSecretKey());
+13.         byte[] encryptedBytes = cipher.doFinal(password.getBytes());
+14.         return Base64.getEncoder().encodeToString(encryptedBytes);
+15.     }
+16. }
