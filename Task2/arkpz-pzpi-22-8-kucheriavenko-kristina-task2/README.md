@@ -62,7 +62,13 @@ mvn exec:java -Dexec.mainClass="com.BiologicalMaterialsSystem.BiologicalMaterial
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+
 Body:
+- materialName (String): Назва біологічного матеріалу.
+- expirationDate (Date): Дата закінчення терміну придатності.
+- status (String): Статус донорства.
+- transferDate (Date): Дата передачі матеріалу.
+- donorID (Long): Ідентифікатор донора.
 
 #### Відповідь 
 
@@ -124,6 +130,7 @@ Path:
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
 - materialID (Long): Ідентифікатор матеріалу, який потрібно оновити.
+  
 Body:
 - materialName (String): Назва біологічного матеріалу.
 - expirationDate (Date): Дата закінчення терміну придатності.
@@ -177,6 +184,7 @@ Path:
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+
 Body:
 - firstName (String): Ім'я донора.
 - lastName (String): Прізвище донора.
@@ -241,6 +249,7 @@ Path:
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
 - DonorID (Long): Ідентифікатор донора, якого потрібно оновити.
+  
 Body:
 - firstName (String): Ім'я донора.
 - lastName (String): Прізвище донора.
@@ -296,6 +305,7 @@ Path:
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+  
 Body:
 
 #### Відповідь 
@@ -362,6 +372,7 @@ Path:
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
 - id (Long): Ідентифікатор запису, який потрібно оновити.
+  
 Body:
 - actionDetails (String): Деталі дії.
 - actionTime (Date): Час виконання дії.
@@ -414,6 +425,7 @@ Path:
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+  
 Body:
 - eventTime (Date): Час події.
 - eventType (String): Тип події.
@@ -476,6 +488,7 @@ Path:
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
 - id (Long): Ідентифікатор сповіщення, яке потрібно оновити.
+  
 Body:
 - eventTime (Date): Час події.
 - eventType (String): Тип події.
@@ -529,6 +542,7 @@ Path:
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+  
 Body:
 - reportType (String): Тип звіту.
 - creationDate (Date): Дата створення звіту.
@@ -591,6 +605,7 @@ Path:
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
 - id (Long): Ідентифікатор звіту, який потрібно оновити.
+  
 Body:
 - reportType (String): Тип звіту.
 - creationDate (Date): Дата створення звіту.
@@ -644,6 +659,7 @@ Path:
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+  
 Body:
 - temperature (double): Температура зберігання.
 - oxygenLevel (double): Рівень кисню.
@@ -706,6 +722,7 @@ Path:
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
 - id (Long): Ідентифікатор умови зберігання, яку потрібно оновити.
+  
 Body:
 - temperature (double): Температура зберігання.
 - oxygenLevel (double): Рівень кисню.
@@ -757,6 +774,7 @@ Path:
 Створює нового користувача.
 
 #### Параметри запиту
+
 Body:
 - firstName (String): Ім'я користувача.
 - lastName (String): Призвище користувача.
@@ -785,6 +803,7 @@ Body:
 #### Параметри запиту
 Path:
 - userId (Long): Ідентифікатор адміністратора, що виконує дію.
+
 Body:
 - firstName (String): Ім'я користувача.
 - lastName (String): Призвище користувача.
