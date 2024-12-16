@@ -67,13 +67,13 @@ Body:
 #### Відповідь 
 
 - 200 OK:
- - BiologicalMaterial (object): Об'єкт створеного матеріалу.
+  - BiologicalMaterial (object): Об'єкт створеного матеріалу.
 - 400 Bad Request:
- - message (string): Повідомлення про помилку у вхідних даних.
+  - message (string): Повідомлення про помилку у вхідних даних.
 - 403 Forbidden:
- - message (string): Відсутність дозволу на виконання дії.
+  - message (string): Відсутність дозволу на виконання дії.
 - 404 Not Found:
- message (string): Адміністратора не знайдено.
+  - message (string): Адміністратора не знайдено.
 
 ### Get Biological Material By ID
 
@@ -90,10 +90,9 @@ Path:
 #### Відповідь 
 
 - 200 OK:
- - BiologicalMaterial (object): Біологічний матеріал за вказаним ідентифікатором.
+  - BiologicalMaterial (object): Біологічний матеріал за вказаним ідентифікатором.
 - 404 Not Found:
- message (string): Повідомлення про те, що матеріал не знайдено.
-
+  - message (string): Повідомлення про те, що матеріал не знайдено.
 
 ### Get All Biological Materials
 
@@ -110,7 +109,7 @@ Path:
 #### Відповідь 
 
 - 200 OK:
- - List<BiologicalMaterial> (Array): Список усіх біологічних матеріалів.
+  - List<BiologicalMaterial> (Array): Список усіх біологічних матеріалів.
 
 
 ### Update Biological Material
@@ -135,13 +134,13 @@ Body:
 #### Відповідь 
 
 - 200 OK:
- - BiologicalMaterial (Object): Оновлений біологічний матеріал.
+  - BiologicalMaterial (Object): Оновлений біологічний матеріал.
 - 400 Bad Request:
- - message (String): Повідомлення про помилку у вхідних даних.
+  - message (String): Повідомлення про помилку у вхідних даних.
 - 403 Forbidden:
- - message (String): Відсутність дозволу на виконання дії.
+  - message (String): Відсутність дозволу на виконання дії.
 - 404 Not Found:
- - message (String): Повідомлення про те, що матеріал не знайдено.
+  - message (String): Повідомлення про те, що матеріал не знайдено.
 
 ### Delete Biological Material
 
