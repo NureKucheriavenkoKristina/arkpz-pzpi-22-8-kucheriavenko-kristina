@@ -28,12 +28,17 @@ git clone https://github.com/NureKucheriavenkoKristina/arkpz-pzpi-22-8-kucheriav
 ### Крок 3: Запуск проекту
 
 В main/resources/application.properties змінити username та password на свої власні дані, які використовуються під час створення бази даних. 
+
 В url змінити порт на свій (встановлюється під час інсталяції PostgreSQL). 
+
 У файлі main/java/com/BiologicalMaterialsSystem/config/SecurityConfig.java змінити username та password на власний. Використовується для доступу до сервера. 
+
 В main/java/com/BiologicalMaterialsSystem/config/MqttConfig.java змінити MQTT_BROKER_URL, CLIENT_ID відповідно до своїх значень. MQTT_BROKER_URL - посилання на сервер брокеру, CLIENT_ID - айді клієнту у брокері. 
+
 1 спосіб. Перейдіть у кореневу директорію проєкту та виконайте команду запуску сервера:
 cd ...\BiologicalMaterialsSystem\src\main\java\com\BiologicalMaterialsSystem
 mvn exec:java -Dexec.mainClass="com.BiologicalMaterialsSystem.BiologicalMaterialsSystemApplication".
+
 2 спосіб. Завантажити застосунок IntelliJ IDEA, відкрити папку з проєктом, відкрити файл BiologicalMaterialsSystemApplication.java та запустити його. 
 
 ### Крок 4: Доступ до API
