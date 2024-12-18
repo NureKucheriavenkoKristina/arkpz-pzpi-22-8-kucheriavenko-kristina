@@ -1,1 +1,239 @@
+Міністерство освіти і науки України
+Харківський національний університет радіоелектроніки
 
+
+
+Кафедра програмної інженерії
+
+
+
+
+Звіт
+з лабораторної роботи №4
+з дисципліни  «Аналіз та рефакторинг коду»
+на тему «РОЗРОБКА ІоТ КЛІЄНТА»
+
+
+
+
+Виконала:						    Перевірив:
+Ст. гр. ПЗПІ-22-8                                  	    ст. викл. Сокорчук І. П.
+Кучерявенко К. Р. 
+
+
+
+
+
+Харків 2024
+4.1 Мета роботи
+Розробити програмне забезпечення для  ІоТ або SmartDevice пристрою, створеного на базі будь-якої поширеної на сьогодні платформи, придатної для реалізації вбудованих систем (Embedded System).
+
+4.2 Хід роботи
+4.2.1 Бізнес логіка ІоТ клієнта
+
+Посилання на відеоролик: https://youtu.be/VT4faVyZ1is
+
+Бізнес-логіка ІоТ клієнта реалізована за допомогою Wokwi — онлайн-платформи для моделювання електронних схем, а також програмування на Arduino. В основі рішення лежить мікроконтролер ESP32, який керує роботою датчиків і комунікацією з іншими компонентами системи. Для вимірювання температури та вологості використовується датчик DHT22, який точно фіксує ці параметри кожні 5 секунд. Для вимірювання рівня кисню обрано потенціометр, що дозволяє вносити необхідні корективи в процес вимірювання. Код знаходиться у додатку А.
+Отримані дані передаються через протокол MQTT до брокера EMQ, який виступає як посередник між ІоТ пристроєм і іншими частинами системи. Після цього інформація про стан датчиків зберігається у базі даних, де для кожного вимірювання створюється новий запис. У таблиці з умовами зберігання фіксуються значення температури, вологості та кисню, а також час їх вимірювання. Паралельно зберігається журнал подій, де кожен новий запис супроводжується розрахунком відхилення поточного значення від середнього значення за попередній період.
+Цей процес дозволяє в реальному часі відстежувати зміни параметрів середовища, автоматично виявляти аномалії та відхилення, а також підтримувати актуальність даних у системі для подальшого аналізу чи прийняття рішень.
+	Для доступу до ІОТ необхідно знати дані брокера, який буде використовуватися. Для даної роботи у якості прикладу використано EMQ. Далі на веб-сторінку Wokwi (https://wokwi.com/) завантажити папку з назвою "esp32-dht22". Змінити порт, сервер, назву підключення mqtt, логін та пароль на власні значення. Код для підключення брокеру до сервера знаходиться у додатку Б. Код для оброблення даних від брокера знаходиться у додатку В.
+Щоб дані надходили до бази даних, необхідно відкрити MQTT Explorer. Створити підключення з власними даними та внести їх до коду. Після чого запустити основний проєкт, а потім проєкт з ІОТ.
+
+ 
+Рисунок 4.1 – UML діаграма прецедентів ІоТ клієнта
+
+ 
+Рисунок 4.2 – UML діаграма діяльності ІоТ клієнта
+
+Висновки: під час роботи було розроблено програмне забезпечення для  ІоТ для програмної системи.
+
+ 
+Додаток А
+Код для отримання даних з датчиків
+
+
+1  #include <WiFi.h>
+2  #include <PubSubClient.h>
+3  #include "DHTesp.h"
+4  #include <NTPClient.h>
+5  
+6  #define WIFI_SSID "Wokwi-GUEST"
+7  #define WIFI_PASSWORD ""
+8  #define WIFI_CHANNEL 6
+9  
+10 WiFiUDP ntpUDP;
+11 NTPClient timeClient(ntpUDP, "pool.ntp.org", 2, 60000);
+12 
+13 const char* MQTT_SERVER = "broker.emqx.io"; 
+14 const int MQTT_PORT = 1883;
+15 const char* MQTT_USER = "";
+16 const char* MQTT_PASSWORD = "";
+17 
+18 const int DHT_PIN = 15;
+19 const int POT_PIN = 34;
+20 const int LED1 = 26;
+21 const int LED2 = 27;
+22 const int materialID = 1;
+23 
+24 DHTesp dhtSensor;
+25 WiFiClient espClient;
+26 PubSubClient client(espClient);
+27 
+28 void connectToWiFi() {
+29   WiFi.begin(WIFI_SSID, WIFI_PASSWORD, WIFI_CHANNEL);
+30   Serial.print("Connecting to WiFi ");
+31   while (WiFi.status() != WL_CONNECTED) {
+32     delay(100);
+33     Serial.print(".");
+34   }
+35   Serial.println(" Connected!");
+36   Serial.print("IP address: ");
+37   Serial.println(WiFi.localIP());
+38 }
+39 
+40 void connectToMQTT() {
+41   while (!client.connected()) {
+42     Serial.print("Connecting to MQTT broker...");
+43     if (client.connect("ESP32Client", MQTT_USER, MQTT_PASSWORD)) {
+44       Serial.println(" Connected!");
+45     } else {
+46       Serial.print(" Failed, rc=");
+47       Serial.print(client.state());
+48       Serial.println(" Trying again in 5 seconds...");
+49       delay(5000);
+50     }
+51   }
+52 }
+53 
+54 void setup() {
+55   Serial.begin(115200);
+56   dhtSensor.setup(DHT_PIN, DHTesp::DHT22);
+57 
+58   connectToWiFi();
+59 
+60   client.setServer(MQTT_SERVER, MQTT_PORT);
+61   connectToMQTT();
+62 }
+63 
+64 void loop() {
+65   if (!client.connected()) {
+66     connectToMQTT();
+67   }
+68   client.loop();
+69 
+70   timeClient.update();
+71   
+72   unsigned long epochTime = timeClient.getEpochTime();
+73 
+74   time_t rawTime = (time_t)epochTime; 
+75   struct tm *timeInfo;
+76   timeInfo = localtime(&rawTime);
+77 
+78   char formattedTime[30];
+79   strftime(formattedTime, sizeof(formattedTime), "%Y-%m-%dT%H:%M:%S", timeInfo);
+80 
+81 
+82   String timestamp = String(formattedTime) + ".000+00:00";
+83   timestamp.replace(" ", "T");
+84 
+85   TempAndHumidity data = dhtSensor.getTempAndHumidity();
+86   String temperature = String(data.temperature, 2);
+87   String humidity = String(data.humidity, 1);
+88   int potValue = analogRead(POT_PIN);
+89   float oxygenLevel = map(potValue, 0, 4095, 0, 100);
+90 
+91   Serial.println("Temp: " + temperature + "°C");
+92   Serial.println("Humidity: " + humidity + "%");
+93   Serial.println("Oxygen Level: " + String(oxygenLevel, 1) + "%");
+94   Serial.println("Time: " + timestamp);
+95   Serial.println("---");
+96 
+97   String jsonData = "{";
+98   jsonData += "\"temperature\": " + temperature + ", ";
+99   jsonData += "\"humidity\": " + humidity + ", ";
+100  jsonData += "\"measurementTime\": \"" + timestamp + "\", ";
+101  jsonData += "\"materialID\": { \"materialID\": " + String(materialID) + " }, ";
+102  jsonData += "\"oxygenLevel\": " + String(oxygenLevel, 1);
+103  jsonData += "}";
+104 
+105  Serial.println("JSON Data: " + jsonData);
+106 
+107  if (client.publish("storage-conditions", jsonData.c_str(), true)) {
+108    Serial.println("Data published successfully with retain");
+109  } else {
+110    Serial.println("Failed to publish data");
+111  }
+112 
+113  delay(5000);
+114 }
+ 
+Додаток Б
+Код для отримання даних від брокера
+
+
+1. @Configuration
+2. public class MqttConfig {
+3. 
+4.     private static final String MQTT_BROKER_URL = "tcp://broker.emqx.io:1883";
+5.     private static final String CLIENT_ID = "spring_mqtt_client";
+6.     private static final String TOPIC = "storage-conditions";
+7. 
+8.     @Bean
+9.     public MqttConnectOptions mqttConnectOptions() {
+10.         MqttConnectOptions options = new MqttConnectOptions();
+11.         options.setServerURIs(new String[]{MQTT_BROKER_URL});
+12.         options.setCleanSession(true);
+13.         return options;
+14.     }
+15. 
+16.     @Bean
+17.     public MqttPahoClientFactory mqttClientFactory(MqttConnectOptions mqttConnectOptions) {
+18.         DefaultMqttPahoClientFactory factory = new DefaultMqttPahoClientFactory();
+19.         factory.setConnectionOptions(mqttConnectOptions);
+20.         return factory;
+21.     }
+22. 
+23.     @Bean
+24.     public MessageChannel mqttInputChannel() {
+25.         return new DirectChannel();
+26.     }
+27. 
+28.     @Bean
+29.     public MqttPahoMessageDrivenChannelAdapter inboundAdapter(
+30.             MqttPahoClientFactory mqttClientFactory,
+31.             MessageChannel mqttInputChannel
+32.     ) {
+33.         MqttPahoMessageDrivenChannelAdapter adapter =
+34.                 new MqttPahoMessageDrivenChannelAdapter(CLIENT_ID, mqttClientFactory, TOPIC);
+35.         adapter.setCompletionTimeout(5000);
+36.         adapter.setConverter(new DefaultPahoMessageConverter());
+37.         adapter.setQos(1);
+38.         adapter.setOutputChannel(mqttInputChannel);
+39.         return adapter;
+40.     }
+41. }
+ 
+Додаток В
+Код для обробки даних від брокера на сервері
+
+
+1. @Component
+2. @RequiredArgsConstructor
+3. public class MqttListener {
+4. 
+5.     private final StorageConditionService storageConditionService;
+6.     private final ObjectMapper objectMapper;
+7. 
+8.     @ServiceActivator(inputChannel = "mqttInputChannel")
+9.     public void handleMqttMessage(Message<String> message) {
+10.         try {
+11.             String payload = message.getPayload();
+12.             StorageCondition condition = objectMapper.readValue(payload, StorageCondition.class);
+13. 
+14.             storageConditionService.createCondition(condition);
+15.             System.out.println("Дані збережено в базі: " + condition);
+16.         } catch (Exception e) {
+17.             System.err.println("Помилка при обробці MQTT повідомлення: " + e.getMessage());
+18.         }
+19.     }
+20. }
