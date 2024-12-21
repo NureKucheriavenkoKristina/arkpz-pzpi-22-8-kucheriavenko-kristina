@@ -795,7 +795,6 @@ Body:
 - 400 Bad Request:
   - message (string): Повідомлення про помилку у вхідних даних.
 
----
 
 ### Create User by Admin
 
@@ -826,7 +825,6 @@ Body:
 - 403 Forbidden:
   - message (string): Адміністратор не має прав для створення користувача.
 
----
 
 ### Get User by ID
 
